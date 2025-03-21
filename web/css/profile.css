@@ -2,7 +2,7 @@ main {
   display: flex;
   max-width: 1200px; /* Định nghĩa chiều rộng tối đa */
   margin: 0 auto; /* Căn giữa */
-  padding: 30px 0p x;
+  padding: 30px 0p ;
 }
 /* Sidebar */
 .sidebar {
