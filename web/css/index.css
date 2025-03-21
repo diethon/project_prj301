@@ -1,0 +1,161 @@
+
+body {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+}
+
+.container {
+    max-width: 1200px; /* Định nghĩa chiều rộng tối đa */
+    margin: 0 auto; /* Căn giữa */
+    padding: 0 ; /* Đảm bảo có khoảng cách nhỏ với mép màn hình */
+
+
+
+}
+
+a{
+    text-decoration: none !important; /* Không có gạch khi hover */
+    color: black;
+}
+
+
+
+/* Container chính của sản phẩm */
+.producV {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 10px;
+}
+
+/* Style cho card sản phẩm */
+.product-card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+    height: 100%; /* Đảm bảo tất cả card có cùng chiều cao */
+    display: flex;
+    flex-direction: column; /* Sắp xếp các phần tử theo chiều dọc */
+    justify-content: space-between;
+}
+
+/* Hiệu ứng khi hover vào sản phẩm */
+.product-card:hover {
+    transform: translateY(-5px); /* Nâng sản phẩm lên khi hover */
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);  /* Tăng bóng đổ khi hover */
+}
+
+/* Hình ảnh sản phẩm */
+.product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 30px;
+    margin-bottom: 15px;
+}
+
+
+/* Tên sản phẩm */
+.product-card h5 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+    height: 57px; /* Đảm bảo tên sản phẩm không bị chồng lấn */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Giới hạn số dòng hiển thị */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Thêm dấu ba chấm khi tên sản phẩm dài */
+}
+
+
+/* Hiển thị giá sản phẩm với màu xanh */
+.product-card .price {
+    font-size: 20px;
+    color: #12afa3; /* Màu xanh giống như nút */
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Nút "Thêm vào Giỏ" */
+.product-card button {
+    background-color: #12afa3;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Hiệu ứng khi hover vào nút "Thêm vào Giỏ" */
+.product-card button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); /* Phóng to nút khi hover */
+}
+
+/* Các nút "Thêm vào Giỏ" và "Giá" */
+.product-card .btn-danger {
+    background-color: #e74c3c;
+    color: white;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 5px;
+    width: 100%;
+    transition: all 0.3s;
+}
+
+.product-card .btn-danger:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+
+/* Thêm phần dọc giữa giá và nút Thêm vào Giỏ */
+.product-card .row {
+    margin-bottom: 10px;
+}
+
+/* Điều chỉnh cho thiết bị di động */
+@media screen and (max-width: 768px) {
+    .producV {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Chỉnh lại lưới cho màn hình nhỏ */
+    }
+
+    .product-card img {
+        height: 250px;  /* Điều chỉnh chiều cao hình ảnh cho di động */
+    }
+}
+
+/* css cho phan trang---------------------------------------------------------*/
+.pagination-container {
+    margin-top: 10px;
+}
+
+.pagination-link {
+    display: inline-block;
+    padding: 10px 15px;
+    margin: 0 5px;
+    background-color: #12afa3;
+    color: white;
+    text-decoration: none;
+    border-radius: 50%;
+}
+
+.pagination-link:hover {
+    background-color: #0056b3;
+}
+
+.pagination-link.active {
+    background-color: #28a745;
+}
+
+

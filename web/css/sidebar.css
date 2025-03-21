@@ -1,0 +1,190 @@
+/* General Reset */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Main container for centering */
+.container {
+  width: 1200px;
+  margin: 0 auto;
+  display: flex;
+}
+
+/* Sidebar Container */
+.sidebar-user {
+  width: 180px;
+  background-color: #fff;
+  color: #000;
+  height: 100vh;
+  border-right: 2px solid #ddd;
+  box-sizing: border-box; /* Đảm bảo padding/border nằm trong width */
+}
+
+/* Profile Section */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  box-sizing: border-box; /* Đảm bảo padding không làm tràn */
+}
+
+/* Áp dụng box-sizing cho tất cả phần tử trong sidebar */
+.sidebar-user * {
+  box-sizing: border-box;
+}
+
+.profile i {
+  font-size: 50px;
+  color: #12afa3;
+  background-color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.profile-info {
+  text-align: left;
+  flex-grow: 1;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.profile-info a {
+  color: #000;
+  text-decoration: none;
+  font-size: 12px;
+  margin-top: 5px;
+  display: inline-block;
+}
+
+.profile-info a:hover,
+.profile-info a:focus {
+  color: #12afa3;
+}
+
+/* Sidebar Menu */
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Main Menu Item */
+li {
+  padding: 10px; /* Padding đồng nhất */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* Account Item and Submenu */
+.account-item {
+  position: relative;
+  width: 100%; /* Giữ trong giới hạn của sidebar */
+}
+
+.account-item > a {
+  color: #000;
+  text-decoration: none;
+  padding: 10px 0; /* Padding không làm tràn nhờ box-sizing */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%; /* Chiếm toàn bộ chiều rộng khả dụng */
+}
+
+.account-item > a:hover,
+.account-item > a:focus {
+  color: #12afa3;
+}
+
+/* Submenu (Initially hidden) */
+#account-options {
+  list-style-type: none;
+  padding-left: 32px; /* Thụt đầu dòng cho submenu */
+  margin: 0;
+  display: none;
+  width: 100%; /* Không vượt quá container cha */
+}
+
+/* Khi account-item active, hiển thị submenu */
+.account-item.active #account-options {
+  display: block;
+}
+
+/* Đảm bảo account-item không thay đổi bố cục khi active */
+.account-item.active {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Giữ trong giới hạn */
+}
+
+/* Main Menu and Submenu Items */
+li a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+
+li i {
+  width: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Ensure text alignment */
+li a span {
+  flex: 1;
+}
+
+/* Submenu items */
+#account-options li {
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#account-options li a {
+  color: #000;
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+#account-options li a:hover,
+#account-options li a:focus {
+  color: #12afa3;
+}
+
+/* Hover and Focus Effects for main menu */
+ul li a {
+  color: #000;
+  text-decoration: none;
+}
+
+ul li a:hover,
+ul li a:focus {
+  color: #12afa3;
+}
+
+ul li a:focus {
+  outline: none;
+}
+
+/* Active Account Item */
+.account-item.active > a {
+  color: #12afa3;
+}
