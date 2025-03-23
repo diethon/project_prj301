@@ -103,7 +103,64 @@
   width: 120px;
   margin-right: 15px;
 }
+    /* Căn chỉnh các nút và input */
+    .form-group {
+        display: flex;
+        align-items: center;
+    }
 
+    /* Định dạng cho input số lượng */
+    #quantity {
+        width: 80px;
+        padding: 8px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-align: center;
+        margin-right: 10px;
+    }
+
+    /* Nút tăng giảm */
+    .btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: #fff;
+        background-color: #12afa3; /* Màu nền */
+        border: none;
+    }
+
+    /* Nút tăng và giảm */
+    #increaseQty {
+        margin-left: 10px;
+    }
+
+    #decreaseQty {
+        margin-right: 10px;
+    }
+
+    /* Hiệu ứng hover cho các nút */
+    .btn:hover {
+        background-color: #0f9a90; /* Màu đậm hơn khi hover */
+    }
+
+    /* Hiệu ứng khi nhấn nút */
+    .btn:active {
+        transform: scale(0.95); /* Tạo hiệu ứng co lại khi nhấn */
+    }
+
+    /* Thêm một chút bóng cho nút */
+    .btn:focus {
+        outline: none;
+        box-shadow: 0 0 5px rgba(18, 175, 163, 0.7);
+    }
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .main-image {

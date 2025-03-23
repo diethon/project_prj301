@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller;
 
 import dao.ProductsDAO;
@@ -13,21 +12,25 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Products;
+import model.Users;
 
 /**
  *
  * @author 84395
  */
-@WebServlet(name="ProductDetailServlet", urlPatterns={"/productDetail"})
+@WebServlet(name = "ProductDetailServlet", urlPatterns = {"/productDetail"})
 public class ProductDetailServlet extends HttpServlet {
-   
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         // Lấy id sản phẩm từ URL
+        HttpSession session = request.getSession();
         int id = Integer.parseInt(request.getParameter("id"));
-        
+        Users user = (Users) session.getAttribute("user");
+        System.out.println(user + "check");
         // Tạo đối tượng DAO để lấy thông tin sản phẩm theo id
         ProductsDAO productsDAO = new ProductsDAO();
         Products product = productsDAO.findById(id); // Giả sử findById trả về đối tượng sản phẩm
@@ -41,20 +44,20 @@ public class ProductDetailServlet extends HttpServlet {
         // Truyền thông tin sản phẩm và danh sách ảnh cho JSP
         request.setAttribute("product", product);
         request.setAttribute("productImages", product.getProductImagesCollection());
-        
+
         // Chuyển hướng đến trang productDetail.jsp
         request.getRequestDispatcher("productDetail.jsp").forward(request, response);
-    } 
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 

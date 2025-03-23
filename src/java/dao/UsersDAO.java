@@ -11,12 +11,13 @@ import java.sql.*;
  *
  * @author anhqu
  */
-public class UsersDAO extends GenericDAO<Users>{
-    
+public class UsersDAO extends GenericDAO<Users> {
+
     public UsersDAO() {
         super(Users.class);
     }
-     public Users checkLogin(String email, String password) {
+
+    public Users checkLogin(String email, String password) {
         String sql = "SELECT * FROM users WHERE mail = ? AND hashed_password = ?";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -29,7 +30,6 @@ public class UsersDAO extends GenericDAO<Users>{
                         rs.getString("username"),
                         rs.getString("hashed_password"),
                         rs.getString("role"),
-                   
                         rs.getBoolean("verified")
                 );
             }
@@ -114,5 +114,5 @@ public class UsersDAO extends GenericDAO<Users>{
         }
         return false;
     }
-    
+
 }

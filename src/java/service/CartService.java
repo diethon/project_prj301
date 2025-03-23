@@ -1,5 +1,6 @@
 package service;
 
+import dao.ShoppingSessionDAO;
 import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -14,6 +15,7 @@ public class CartService {
 
     // EntityManagerFactory to manage entities
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("MedicineAppPU");
+    private static final ShoppingSessionDAO shoppingDao = new ShoppingSessionDAO();
 
     // Get CartItems by session
     public List<CartItem> getCartItemsBySession(ShoppingSession shoppingSession) {
@@ -22,6 +24,15 @@ public class CartService {
                 .setParameter("session", shoppingSession)
                 .getResultList();
         em.close();
+        System.out.println("--------------");
+//        System.out.println("cartItem  " + cartItems);
+//        for (CartItem c : cartItems) {
+//            if (c.getQuantity() == 0) {
+//                cartItems.remove(c);
+//            }
+//        }
+        System.out.println("asdasd");
+        System.out.println(cartItems);
         return cartItems;
     }
 
@@ -39,16 +50,11 @@ public class CartService {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-
-            // Associate the cart item with the shopping session
             cartItem.setSessionId(shoppingSession);
-
             // Persist the cart item
             em.persist(cartItem);
-
             // Update the shopping session's total
             updateShoppingSessionTotal(shoppingSession, em);
-
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
@@ -61,28 +67,60 @@ public class CartService {
     }
 
     // Remove a CartItem by its ID
-    public void removeCartItem(int cartItemId) {
+//    public void removeCartItem(int cartItemId) {
+//        EntityManager em = emf.createEntityManager();
+//        EntityTransaction transaction = em.getTransaction();
+//        try {
+//            transaction.begin();
+//            CartItem cartItem = em.find(CartItem.class, cartItemId);
+//            if (cartItem != null) {
+//                em.remove(cartItem);
+//            }
+//            transaction.commit();
+//        } catch (Exception e) {
+//            if (transaction.isActive()) {
+//                transaction.rollback();
+//            }
+//            e.printStackTrace(); // Or log the exception
+//        } finally {
+//            em.close();
+//        }
+//    }
+    public void checkAndAddCartItem(ShoppingSession shoppingSession, CartItem cartItem) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-            CartItem cartItem = em.find(CartItem.class, cartItemId);
-            if (cartItem != null) {
-                em.remove(cartItem);
+            // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+            List<CartItem> existingCartItems = em.createQuery("SELECT c FROM CartItem c WHERE c.sessionId = :session AND c.productId = :product", CartItem.class)
+                    .setParameter("session", shoppingSession)
+                    .setParameter("product", cartItem.getProductId())
+                    .getResultList();
+
+            if (existingCartItems.isEmpty()) {
+                cartItem.setSessionId(shoppingSession);
+                em.persist(cartItem);
+            } else {
+                CartItem existingItem = existingCartItems.get(0);
+                existingItem.setQuantity(existingItem.getQuantity() + 1);
+                em.merge(existingItem); // Cập nhật cartItem
             }
+
+            updateShoppingSessionTotal(shoppingSession, em);
+
             transaction.commit();
         } catch (Exception e) {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            e.printStackTrace(); // Or log the exception
+            e.printStackTrace();
         } finally {
             em.close();
         }
     }
 
     // Update a CartItem
-    public void updateCartItem(CartItem cartItem) {
+    public void updateCartItem(ShoppingSession shoppingSession, CartItem cartItem) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         try {
@@ -91,6 +129,7 @@ public class CartService {
             // Check if CartItem exists
             CartItem existingItem = em.find(CartItem.class, cartItem.getCartItemId());
             if (existingItem != null) {
+                updateShoppingSessionTotal(shoppingSession, em);
                 em.merge(cartItem); // Update the cart item
             } else {
                 throw new IllegalArgumentException("Cart item not found for update.");
@@ -110,30 +149,30 @@ public class CartService {
     public ShoppingSession findOrCreateShoppingSession(Users user) {
         EntityManager em = emf.createEntityManager();
         ShoppingSession session = em.createQuery("SELECT s FROM ShoppingSession s WHERE s.userId = :user", ShoppingSession.class)
-                                   .setParameter("user", user)
-                                   .getResultList()
-                                   .stream()
-                                   .findFirst()
-                                   .orElse(new ShoppingSession());
+                .setParameter("user", user)
+                .getResultList()
+                .stream()
+                .findFirst()
+                .orElse(new ShoppingSession());
 
         if (session.getSessionId() == null) {
-            // If no session exists, create a new one
             session.setUserId(user);
             session.setCreatedAt(new java.util.Date());
             session.setModifiedAt(new java.util.Date());
             session.setTotal(BigDecimal.ZERO);
             em.persist(session);
+            shoppingDao.create(session);
         }
-
         em.close();
+        System.out.println("shopping session" + session);
         return session;
     }
 
     // Update the shopping session's total price
     private void updateShoppingSessionTotal(ShoppingSession shoppingSession, EntityManager em) {
         BigDecimal total = (BigDecimal) em.createQuery("SELECT SUM(ci.productId.price * ci.quantity) FROM CartItem ci WHERE ci.sessionId = :session", BigDecimal.class)
-                                         .setParameter("session", shoppingSession)
-                                         .getSingleResult();
+                .setParameter("session", shoppingSession)
+                .getSingleResult();
         shoppingSession.setTotal(total);
         shoppingSession.setModifiedAt(new java.util.Date());
         em.merge(shoppingSession); // Save the updated session with the new total
@@ -147,8 +186,8 @@ public class CartService {
             transaction.begin();
             CartItem cartItem = em.find(CartItem.class, cartItemId);
             if (cartItem != null) {
-                em.remove(cartItem);
-                // Update the session total after removal
+                cartItem.setQuantity(0);
+                em.merge(cartItem);
                 updateShoppingSessionTotal(shoppingSession, em);
             }
             transaction.commit();
@@ -156,9 +195,11 @@ public class CartService {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
-            e.printStackTrace(); // Or log the exception
+            e.printStackTrace();
         } finally {
             em.close();
         }
+
     }
+
 }

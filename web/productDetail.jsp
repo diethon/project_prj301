@@ -143,10 +143,17 @@
                     <form action="carts" method="post" class="d-flex align-items-center mt-4">
                         <input type="hidden" name="productId" value="${product.productId}">
                         <div class="form-group mb-0 mr-3">
-                            <label for="quantity" class="mr-2">Số lượng:<input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control quantity-input"></label>
-
+                            <label for="quantity" class="mr-2">Số lượng:
+                                <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control quantity-input">
+                            </label>
+                            <button type="button" class="btn" id="increaseQty">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                            <button type="button" class="btn" id="decreaseQty">
+                                <i class="fa fa-minus"></i>
+                            </button>
                         </div>
-
+                        <input type="hidden" name="action" value="add">
                         <button type="submit" class="btn btn-primary btn-lg mt-3">
                             <i class="fa fa-shopping-cart"></i> Thêm vào giỏ hàng
                         </button>
@@ -157,4 +164,22 @@
 
         <jsp:include page="Footer.jsp"></jsp:include>
     </body>
+
+    <script>
+        const quantityInput = document.getElementById("quantity");
+        const increaseBtn = document.getElementById("increaseQty");
+        const decreaseBtn = document.getElementById("decreaseQty");
+
+        increaseBtn.addEventListener("click", function () {
+            let quantity = parseInt(quantityInput.value);
+            quantityInput.value = quantity + 1;
+        });
+
+        decreaseBtn.addEventListener("click", function () {
+            let quantity = parseInt(quantityInput.value);
+            if (quantity > 1) {
+                quantityInput.value = quantity - 1;
+            }
+        });
+    </script>
 </html> 

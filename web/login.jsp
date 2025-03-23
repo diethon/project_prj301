@@ -121,6 +121,7 @@
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" name="password" placeholder="Nhập mật khẩu" required>
                 </div>
+                <div>${loginError}</div>
                 <button type="submit" class="auth-btn">ĐĂNG NHẬP</button>
             </form>
             <div class="forgot-password-container">

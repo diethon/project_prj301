@@ -13,10 +13,19 @@
     <body>
         <jsp:include page="Header.jsp"></jsp:include>
 
-            <div class="container mt-5 mb-5">
-                <h2>Giỏ hàng của bạn</h2>
+        <div class="container mt-5 mb-5">
+            <h2>Giỏ hàng của bạn</h2>
 
-            <c:if test="${empty cart.cartItems}">
+            <!-- Kiểm tra nếu tất cả các sản phẩm trong giỏ hàng có số lượng = 0 -->
+            <c:set var="allItemsZero" value="true" />
+            <c:forEach var="item" items="${cart.cartItems}">
+                <c:if test="${item.quantity > 0}">
+                    <c:set var="allItemsZero" value="false" />
+                </c:if>
+            </c:forEach>
+
+            <!-- Nếu tất cả sản phẩm có số lượng = 0, hiển thị giỏ hàng trống -->
+            <c:if test="${allItemsZero}">
                 <div class="empty-cart text-center">
                     <i class="fa fa-shopping-cart fa-5x mb-3"></i>
                     <h3>Giỏ hàng của bạn đang trống</h3>
@@ -25,7 +34,8 @@
                 </div>
             </c:if>
 
-            <c:if test="${not empty cart.cartItems}">
+            <!-- Hiển thị giỏ hàng nếu có sản phẩm -->
+            <c:if test="${not allItemsZero}">
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
@@ -39,46 +49,49 @@
                         </thead>
                         <tbody>
                             <c:forEach var="item" items="${cart.cartItems}">
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="${item.product.imageUrl}" alt="${item.product.nameProduct}" class="cart-item-image mr-3">
-                                            <div>
-                                                <h5><a href="product?id=${item.product.productId}">${item.product.nameProduct}</a></h5>
-                                                <small>${item.product.sku}</small>
+                                <c:if test="${item.quantity > 0}">
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="${item.productId.imageUrl}" alt="${item.productId.nameProduct}" class="cart-item-image mr-3">
+                                                <div>
+                                                    <h5><a href="productDetail?id=${item.productId.productId}">${item.productId.nameProduct}</a></h5>
+                                                    <small>${item.productId.sku}</small>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <c:if test="${item.product.discountPercent != null && item.product.discountPercent > 0}">
-                                            <span class="original-price">${item.product.price} VNĐ</span><br>
-                                            <span class="discounted-price">${item.product.discountedPrice} VNĐ</span>
-                                        </c:if>
-                                        <c:if test="${item.product.discountPercent == null || item.product.discountPercent == 0}">
-                                            ${item.product.price} VNĐ
-                                        </c:if>
-                                    </td>
-                                    <td>
-                                        <form action="carts" method="post">
-                                            <input type="hidden" name="action" value="update">
-                                            <input type="hidden" name="cartItemId" value="${item.cartItemId}">
-                                            <input type="number" name="quantity" value="${item.quantity}" min="1" class="form-control quantity-input">
-                                            <button type="submit" class="btn btn-sm btn-outline-secondary mt-2">Cập nhật</button>
-                                        </form>
-                                    </td>
-                                    <td>${item.subtotal} VNĐ</td>
-                                    <td>
-                                        <form action="carts" method="post">
-                                            <input type="hidden" name="action" value="remove">
-                                            <input type="hidden" name="cartItemId" value="${item.cartItemId}">
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td>
+                                            <c:if test="${item.productId.discountPercent > 0}">
+                                                <span class="original-price">${item.productId.price} VNĐ</span><br>
+                                            </c:if>
+                                            <c:if test="${item.productId.discountPercent == 0}">
+                                                ${item.productId.price} VNĐ
+                                            </c:if>
+                                        </td>
+                                        <td>
+                                            <form action="carts" method="post">
+                                                <input type="hidden" name="action" value="update">
+                                                <input type="hidden" name="cartItemId" value="${item.cartItemId}">
+                                                <input type="number" name="quantity" value="${item.quantity}" min="1" class="form-control quantity-input">
+                                                <button type="submit" class="btn btn-sm btn-outline-secondary mt-2">Cập nhật</button>
+                                            </form>
+                                        </td>
+                                        <td>${item.quantity * item.productId.price} VNĐ</td>
+                                        <td>
+                                            <form action="carts" method="post">
+                                                <input type="hidden" name="action" value="remove">
+                                                <input type="hidden" name="cartItemId" value="${item.cartItemId}">
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </c:if>
                             </c:forEach>
                         </tbody>
+
+                        <!-- Hiển thị tổng giỏ hàng -->
                         <tfoot>
                             <tr>
                                 <td colspan="3" class="text-right"><strong>Tổng cộng:</strong></td>
@@ -88,6 +101,7 @@
                     </table>
                 </div>
 
+                <!-- Các hành động thêm sản phẩm hoặc thanh toán -->
                 <div class="cart-actions d-flex justify-content-between">
                     <a href="home" class="btn btn-outline-secondary">
                         <i class="fa fa-arrow-left mr-2"></i>Tiếp tục mua sắm
@@ -102,4 +116,3 @@
         <jsp:include page="Footer.jsp"></jsp:include>
     </body>
 </html>
-

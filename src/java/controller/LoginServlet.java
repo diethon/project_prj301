@@ -23,7 +23,7 @@ import model.Users;
 @WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
 
-      private UsersDAO usersDAO;
+    private UsersDAO usersDAO;
 
     @Override
     public void init() {
@@ -43,23 +43,19 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         Users user = usersDAO.checkLogin(email, password);
-
+        System.out.println(user);
         if (user != null) {
-          
-            
-
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             session.setAttribute("role", user.getRole());
             session.setAttribute("username", user.getUsername());
             System.out.println(user + " " + user.getUsername());
             String role = user.getRole().toLowerCase();
-
             if (role.equals("customer")) {
                 response.sendRedirect("home");
             } else if (role.equals("admin")) {
                 response.sendRedirect("home");
-            } 
+            }
         } else {
             request.setAttribute("loginError", "Sai tên đăng nhập hoặc mật khẩu!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
