@@ -41,7 +41,6 @@ public class CartServlet extends HttpServlet {
     // Handle GET request: Show the cart items
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         // Get the logged-in user
         Users user = (Users) request.getSession().getAttribute("user");
         List<CartItem> cart = null;
@@ -51,11 +50,12 @@ public class CartServlet extends HttpServlet {
         }
         ShoppingSession shoppingSession = cartService.findOrCreateShoppingSession(user);
         List<CartItem> cartItems = cartService.getCartItemsBySession(shoppingSession);
+        int number = cartService.getQuantityProduct(shoppingSession);
+        request.setAttribute("numberProduct", number);
         CartBean cartBean = new CartBean();
         cartBean.setCartItems(cartItems);
         cartBean.calculateTotal();
         request.setAttribute("cart", cartBean);
-
         request.getRequestDispatcher("/cart.jsp").forward(request, response);
         // Retrieve all the cart items for the shopping session
         System.out.println("cart--------------- do post");

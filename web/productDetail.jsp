@@ -55,44 +55,7 @@
         </script>
     </head>
     <body>
-        <style>
-            /* CSS cho nút chuyển ảnh Previous và Next */
-            .prev-btn, .next-btn {
-                width: 50px;
-                height: 50px;
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                background-color: rgba(128, 128, 128, 0.5); /* Màu xám */
-                color: white;
-                border: none;
-                padding: 10px;
-                font-size: 18px;
-                cursor: pointer;
-                border-radius: 50%; /* Để có hình tròn */
-                z-index: 1000;
-            }
-
-            .prev-btn {
-                left: 10px; /* Vị trí nút Previous ở bên trái */
-            }
-
-            .next-btn {
-                right: 10px; /* Vị trí nút Next ở bên phải */
-            }
-
-            /* Thêm hiệu ứng hover cho nút */
-            .prev-btn:hover, .next-btn:hover {
-                background-color: #555; /* Màu xám đậm khi hover */
-            }
-
-            /* CSS cho hình ảnh lớn */
-            .main-image {
-                position: relative;
-                max-width: 100%;
-                height: auto;
-            }
-        </style>
+       
         <jsp:include page="Header.jsp"></jsp:include>
 
             <div class="container mt-5 mb-5">
@@ -146,11 +109,11 @@
                             <label for="quantity" class="mr-2">Số lượng:
                                 <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control quantity-input">
                             </label>
-                            <button type="button" class="btn" id="increaseQty">
-                                <i class="fa fa-plus"></i>
-                            </button>
                             <button type="button" class="btn" id="decreaseQty">
                                 <i class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn" id="increaseQty">
+                                <i class="fa fa-plus"></i>
                             </button>
                         </div>
                         <input type="hidden" name="action" value="add">

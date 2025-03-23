@@ -331,10 +331,10 @@
             </div>
             <div class="cart">
                 <span class="cart-icon-text">
-                    <a href="cart.jsp" id="loginBtn">Giỏ hàng:</a>
+                    <a href="carts" id="loginBtn">Giỏ hàng:</a>
                 </span>
                 <span class="cart-count-text">
-                    <span id="cart-count">0</span> sản phẩm
+                    <span id="cart-count">${numberProduct}</span> sản phẩm
                 </span>
             </div>
         </div>

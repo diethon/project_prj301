@@ -31,7 +31,6 @@ public class CartService {
 //                cartItems.remove(c);
 //            }
 //        }
-        System.out.println("asdasd");
         System.out.println(cartItems);
         return cartItems;
     }
@@ -42,6 +41,17 @@ public class CartService {
         CartItem cartItem = em.find(CartItem.class, cartItemId);
         em.close();
         return cartItem;
+    }
+
+    public int getQuantityProduct(ShoppingSession shoppingSession) {
+        int number = 0;
+        List<CartItem> cartItems = getCartItemsBySession(shoppingSession);
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getQuantity() != 0) {
+                number++;
+            }
+        }
+        return number;
     }
 
     // Add a CartItem to the cart (ShoppingSession)
