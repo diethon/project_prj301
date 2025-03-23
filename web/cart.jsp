@@ -13,10 +13,10 @@
     <body>
         <jsp:include page="Header.jsp"></jsp:include>
 
-        <div class="container mt-5 mb-5">
-            <h2>Giỏ hàng của bạn</h2>
+            <div class="container mt-5 mb-5">
+                <h2>Giỏ hàng của bạn</h2>
 
-            <!-- Kiểm tra nếu tất cả các sản phẩm trong giỏ hàng có số lượng = 0 -->
+                <!-- Kiểm tra nếu tất cả các sản phẩm trong giỏ hàng có số lượng = 0 -->
             <c:set var="allItemsZero" value="true" />
             <c:forEach var="item" items="${cart.cartItems}">
                 <c:if test="${item.quantity > 0}">
@@ -106,13 +106,43 @@
                     <a href="home" class="btn btn-outline-secondary">
                         <i class="fa fa-arrow-left mr-2"></i>Tiếp tục mua sắm
                     </a>
-                    <a href="checkout" class="btn btn-primary">
-                        Thanh toán<i class="fa fa-arrow-right ml-2"></i>
-                    </a>
+                    <form action="payment" method="post" class="btn btn-primary">
+                        <input type="hidden" name="totalBill" value=${cart.total}>
+                        <button type="submit" style="
+                                background: transparent;
+                                color: black;
+                                border: none;
+                                padding: 0;
+                                font-size: 16px;
+                                font-weight: bold;
+                                cursor: pointer;">
+                            Thanh Toán
+                        </button><i class="fa fa-arrow-right ml-2"></i>
+                        <input type="hidden" id="bankCode" name="bankCode">
+                    </form>
                 </div>
             </c:if>
         </div>
 
         <jsp:include page="Footer.jsp"></jsp:include>
     </body>
+    <script>
+        function generateRandomBankCode() {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const digits = '0123456789';
+            let bankCode = '';
+
+            for (let i = 0; i < 4; i++) {
+                bankCode += letters.charAt(Math.floor(Math.random() * letters.length));
+            }
+
+            for (let i = 0; i < 4; i++) {
+                bankCode += digits.charAt(Math.floor(Math.random() * digits.length));
+            }
+
+            return bankCode;
+        }
+
+        document.getElementById('bankCode').value = generateRandomBankCode();
+    </script>
 </html>

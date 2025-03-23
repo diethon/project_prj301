@@ -2,6 +2,7 @@ package service;
 
 import dao.ShoppingSessionDAO;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -25,12 +26,7 @@ public class CartService {
                 .getResultList();
         em.close();
         System.out.println("--------------");
-//        System.out.println("cartItem  " + cartItems);
-//        for (CartItem c : cartItems) {
-//            if (c.getQuantity() == 0) {
-//                cartItems.remove(c);
-//            }
-//        }
+//      
         System.out.println(cartItems);
         return cartItems;
     }
@@ -62,6 +58,13 @@ public class CartService {
             transaction.begin();
             cartItem.setSessionId(shoppingSession);
             // Persist the cart item
+
+            if (cartItem.getCreatedAt() == null) {
+                cartItem.setCreatedAt(new Date());
+            }
+            if (cartItem.getModifiedAt() == null) {
+                cartItem.setModifiedAt(new Date());
+            }
             em.persist(cartItem);
             // Update the shopping session's total
             updateShoppingSessionTotal(shoppingSession, em);
@@ -112,7 +115,7 @@ public class CartService {
                 em.persist(cartItem);
             } else {
                 CartItem existingItem = existingCartItems.get(0);
-                existingItem.setQuantity(existingItem.getQuantity() + 1);
+                existingItem.setQuantity(existingItem.getQuantity() + cartItem.getQuantity());
                 em.merge(existingItem); // Cập nhật cartItem
             }
 
@@ -135,7 +138,6 @@ public class CartService {
         EntityTransaction transaction = em.getTransaction();
         try {
             transaction.begin();
-
             // Check if CartItem exists
             CartItem existingItem = em.find(CartItem.class, cartItem.getCartItemId());
             if (existingItem != null) {

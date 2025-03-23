@@ -1,5 +1,3 @@
-
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -55,7 +53,7 @@
         </script>
     </head>
     <body>
-       
+
         <jsp:include page="Header.jsp"></jsp:include>
 
             <div class="container mt-5 mb-5">
@@ -78,7 +76,6 @@
                                     <img src="${image.imageUrl}" alt="${product.nameProduct} view ${status.index + 1}">
                                 </div>
                             </c:forEach>
-
                         </div>
                     </div>
                 </div>
@@ -124,25 +121,27 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <jsp:include page="Footer.jsp"></jsp:include>
-    </body>
+    <jsp:include page="Footer.jsp"></jsp:include>
+</body>
 
-    <script>
-        const quantityInput = document.getElementById("quantity");
-        const increaseBtn = document.getElementById("increaseQty");
-        const decreaseBtn = document.getElementById("decreaseQty");
+<script>
+    const quantityInput = document.getElementById("quantity");
+    const increaseBtn = document.getElementById("increaseQty");
+    const decreaseBtn = document.getElementById("decreaseQty");
+    
+    increaseBtn.addEventListener("click", function () {
+        let quantity = parseInt(quantityInput.value);
+        quantityInput.value = quantity + 1;  // Tăng số lượng
+    });
 
-        increaseBtn.addEventListener("click", function () {
-            let quantity = parseInt(quantityInput.value);
-            quantityInput.value = quantity + 1;
-        });
-
-        decreaseBtn.addEventListener("click", function () {
-            let quantity = parseInt(quantityInput.value);
-            if (quantity > 1) {
-                quantityInput.value = quantity - 1;
-            }
-        });
-    </script>
-</html> 
+    decreaseBtn.addEventListener("click", function () {
+        let quantity = parseInt(quantityInput.value);
+        if (quantity > 1) {
+            quantityInput.value = quantity - 1;  // Giảm số lượng nếu lớn hơn 1
+        }
+    });
+    
+</script>
+</html>
