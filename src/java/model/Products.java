@@ -93,6 +93,30 @@ public class Products implements Serializable {
     private Collection<CartItem> cartItemCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "productId")
     private Collection<OrderItems> orderItemsCollection;
+    
+    private int views;
+
+    public Products(Integer productId, String nameProduct, String description, String sku, BigDecimal price, String ingredient, Date createdAt, Date modifiedAt, Boolean state, ProductCategory categoryId, ProductDiscount discountId, ProductOriginal originId, ProductPackaging packagingId, Collection<ProductImages> productImagesCollection, ProductInventory productInventory, Collection<CartItem> cartItemCollection, Collection<OrderItems> orderItemsCollection, int views) {
+        this.productId = productId;
+        this.nameProduct = nameProduct;
+        this.description = description;
+        this.sku = sku;
+        this.price = price;
+        this.ingredient = ingredient;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+        this.state = state;
+        this.categoryId = categoryId;
+        this.discountId = discountId;
+        this.originId = originId;
+        this.packagingId = packagingId;
+        this.productImagesCollection = productImagesCollection;
+        this.productInventory = productInventory;
+        this.cartItemCollection = cartItemCollection;
+        this.orderItemsCollection = orderItemsCollection;
+        this.views = views;
+    }
+    
 
     public Products() {
     }
@@ -242,6 +266,15 @@ public class Products implements Serializable {
     public void setOrderItemsCollection(Collection<OrderItems> orderItemsCollection) {
         this.orderItemsCollection = orderItemsCollection;
     }
+
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
+    
 
     public String getImageUrl() {
         if (productImagesCollection != null && !productImagesCollection.isEmpty()) {

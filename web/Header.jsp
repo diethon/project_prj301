@@ -3,6 +3,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
 <!DOCTYPE html>
+
+
+
 <html lang="vi">
 
     <head>
@@ -11,6 +14,9 @@
         <title>Header</title>
         <link rel="stylesheet" href="css/header.css">
         <link rel="Website Icon" type="png" href="img/logo.png">
+        
+        <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2025/03/22/11/20250322114328-667C9IUQ.js"></script>
 
         <style>
             /* Style for the horizontal navigation links */
@@ -235,5 +241,6 @@
         </nav>
 
     </body>
+
 
 </html>
