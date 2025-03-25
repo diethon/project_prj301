@@ -4,6 +4,7 @@
  */
 package com.vnpay.common;
 
+import dao.CartItemDAO;
 import dao.OrderDetailsDAO;
 import dao.ProductInventoryDAO;
 import java.io.IOException;
@@ -13,9 +14,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -33,16 +36,18 @@ import service.ProductService;
 public class VnpayReturn extends HttpServlet {
 
     private CartService cartService;
-    private ProductService productService;
+    private CartItemDAO cartItemDao;
     private OrderDetailsDAO orderDao;
     private PaymentService paymentservice;
+    private ProductInventoryDAO productInventoryDAO;
 
     @Override
     public void init() throws ServletException {
         orderDao = new OrderDetailsDAO();
         paymentservice = new PaymentService();
-        productService = new ProductService();
+        cartItemDao = new CartItemDAO();
         cartService = new CartService();
+        productInventoryDAO = new ProductInventoryDAO();
     }
 
     /**
@@ -88,19 +93,30 @@ public class VnpayReturn extends HttpServlet {
                 }
                 paymentservice.updatePaymentService(orderDetails, status);
                 request.setAttribute("transResult", transSuccess);
-                List<CartItem> cart = null;
-                Users user = (Users) request.getSession().getAttribute("user");
-                ShoppingSession shoppingSession = cartService.findOrCreateShoppingSession(user);
-                List<CartItem> cartItems = cartService.getCartItemsBySession(shoppingSession);
-                ProductInventoryDAO productInventoryDAO = new ProductInventoryDAO();
-                for (CartItem cartItem : cartItems) {
-                    productInventoryDAO.subtractQuantity(cartItem.getProductId().getProductId(), cartItem.getQuantity());
-                    cartItem.setQuantity(0);
-                    cartService.updateCartItem(shoppingSession, cartItem);
+                if (transSuccess) {
+                    HttpSession session = request.getSession();
+
+                    String selectedItems = (String) session.getAttribute("selectedItemsIds");
+                    System.out.println(selectedItems + "test chuoi");
+                    if (selectedItems != null && !selectedItems.isEmpty()) {
+                        String[] selectedItemIds = selectedItems.split(",");
+                        List<Integer> selectedItemIdList = new ArrayList<>();
+                        for (String itemId : selectedItemIds) {
+                            selectedItemIdList.add(Integer.parseInt(itemId));
+                        }
+                        Users user = (Users) request.getSession().getAttribute("user");
+                        ShoppingSession shoppingSession = cartService.findOrCreateShoppingSession(user);
+                        ArrayList<CartItem> cartItems = cartItemDao.findCartItemBylistId(selectedItemIdList);
+                        productInventoryDAO.updatePaymentSuccess(shoppingSession, cartItems);
+                        request.getRequestDispatcher("checkout.jsp").forward(request, response);
+                    }
+                } else {
+                    request.setAttribute("errorMessage", "Thanh toán không thành công. Vui lòng thử lại.");
+                    request.getRequestDispatcher("checkouterr.jsp").forward(request, response);
                 }
-                request.getRequestDispatcher("paymentResult.jsp").forward(request, response);
             } else {
-                System.out.println("GD KO HOP LE (invalid signature)");
+                request.setAttribute("errorMessage", "Thanh toán không hợp lệ. Vui lòng thử lại.");
+                request.getRequestDispatcher("checkouterr.jsp").forward(request, response);
             }
         }
     }

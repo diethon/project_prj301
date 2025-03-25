@@ -6,6 +6,7 @@
 package com.vnpay.common;
 
 import dao.OrderDetailsDAO;
+import jakarta.mail.Session;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -23,6 +24,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import model.OrderDetails;
 import model.Users;
@@ -59,10 +61,13 @@ public class ajaxServlet extends HttpServlet {
         order.setUserId(user);
         order.setTotal(BigDecimal.valueOf(amountDouble));
         int orderId = paymentservice.addPaymentService(order);
+        String selectedItems = req.getParameter("selectedItemsIds");
         if (orderId < 0) {
             resp.sendRedirect("carts");
             return;
         }
+        HttpSession session = req.getSession();
+        session.setAttribute("selectedItemsIds", selectedItems);
         String vnp_Version = "2.1.0";
         String vnp_Command = "pay";
         String orderType = "other";

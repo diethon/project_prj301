@@ -15,7 +15,6 @@
 
             <div class="container mt-5 mb-5">
                 <h2>Giỏ hàng của bạn</h2>
-
                 <!-- Kiểm tra nếu tất cả các sản phẩm trong giỏ hàng có số lượng = 0 -->
             <c:set var="allItemsZero" value="true" />
             <c:forEach var="item" items="${cart.cartItems}">
@@ -34,7 +33,6 @@
                 </div>
             </c:if>
 
-            <!-- Hiển thị giỏ hàng nếu có sản phẩm -->
             <c:if test="${not allItemsZero}">
                 <div class="table-responsive">
                     <table class="table table-bordered">
@@ -43,8 +41,8 @@
                                 <th>Sản phẩm</th>
                                 <th>Giá</th>
                                 <th>Số lượng</th>
+                                <th>Chọn mua</th>
                                 <th>Thành tiền</th>
-                                <th>Xóa</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,38 +74,35 @@
                                                 <button type="submit" class="btn btn-sm btn-outline-secondary mt-2">Cập nhật</button>
                                             </form>
                                         </td>
-                                        <td>${item.quantity * item.productId.price} VNĐ</td>
-                                        <td>
-                                            <form action="carts" method="post">
-                                                <input type="hidden" name="action" value="remove">
-                                                <input type="hidden" name="cartItemId" value="${item.cartItemId}">
-                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </form>
+                                        <td style="display: flex ; justify-content: center; border-bottom-color: #f2f2f2">
+                                            <input type="checkbox" name="selectedItems" value="${item.cartItemId}" class="select-item-checkbox" style="width: 40px; height: 40px">
+
                                         </td>
+                                        <td>${item.quantity * item.productId.price} VNĐ</td>
                                     </tr>
                                 </c:if>
                             </c:forEach>
+
                         </tbody>
 
                         <!-- Hiển thị tổng giỏ hàng -->
                         <tfoot>
                             <tr>
-                                <td colspan="3" class="text-right"><strong>Tổng cộng:</strong></td>
-                                <td colspan="2"><strong>${cart.total} VNĐ</strong></td>
+                                <td colspan="4" class="text-right"><strong>Tổng cộng:</strong></td>
+                                <td colspan="2"><strong id="totalAmount">0 VNĐ</strong></td>
                             </tr>
                         </tfoot>
                     </table>
                 </div>
-
-                <!-- Các hành động thêm sản phẩm hoặc thanh toán -->
                 <div class="cart-actions d-flex justify-content-between">
                     <a href="home" class="btn btn-outline-secondary">
                         <i class="fa fa-arrow-left mr-2"></i>Tiếp tục mua sắm
                     </a>
+
+
                     <form action="payment" method="post" class="btn btn-primary">
-                        <input type="hidden" name="totalBill" value=${cart.total}>
+                        <input type="hidden" name="totalBill" value="0">
+                        <input type="hidden" name="selectedItemsIds" id="selectedItemsIds" value="">
                         <button type="submit" style="
                                 background: transparent;
                                 color: black;
@@ -118,31 +113,36 @@
                                 cursor: pointer;">
                             Thanh Toán
                         </button><i class="fa fa-arrow-right ml-2"></i>
-                        <input type="hidden" id="bankCode" name="bankCode">
+
                     </form>
                 </div>
             </c:if>
+
         </div>
 
         <jsp:include page="Footer.jsp"></jsp:include>
     </body>
     <script>
-        function generateRandomBankCode() {
-            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            const digits = '0123456789';
-            let bankCode = '';
+        document.querySelectorAll('.select-item-checkbox').forEach(function (checkbox) {
+            checkbox.addEventListener('change', function () {
+                let total = 0;
+                let selectedItemsIds = [];
+                let checkboxes = document.querySelectorAll('.select-item-checkbox:checked');
+                checkboxes.forEach(function (checkbox) {
+                    let row = checkbox.closest('tr');
+                    let price = parseFloat(row.querySelector('td:nth-child(2)').textContent.replace(' VNĐ', '').replace(',', ''));
+                    let quantity = parseInt(row.querySelector('input[name="quantity"]').value);
+                    total += price * quantity;
+                    selectedItemsIds.push(checkbox.value);
+                });
+                document.getElementById('totalAmount').textContent = total.toLocaleString() + ' VNĐ';
+                document.querySelector('input[name="totalBill"]').value = total;
 
-            for (let i = 0; i < 4; i++) {
-                bankCode += letters.charAt(Math.floor(Math.random() * letters.length));
-            }
-
-            for (let i = 0; i < 4; i++) {
-                bankCode += digits.charAt(Math.floor(Math.random() * digits.length));
-            }
-
-            return bankCode;
-        }
-
-        document.getElementById('bankCode').value = generateRandomBankCode();
+                document.getElementById('selectedItemsIds').value = selectedItemsIds.join(',');
+                console.log('Selected cartItemIds:', selectedItemsIds);
+                console.log('Total amount:', total.toLocaleString() + ' VNĐ');
+            });
+        });
     </script>
+
 </html>

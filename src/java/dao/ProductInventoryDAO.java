@@ -4,12 +4,17 @@
  */
 package dao;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import model.CartItem;
 import model.ProductInventory;
+import model.ShoppingSession;
+import service.CartService;
 
 /**
  *
@@ -18,6 +23,7 @@ import model.ProductInventory;
 public class ProductInventoryDAO extends GenericDAO<ProductInventory> {
 
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("MedicineAppPU");
+    private static final CartService cartService = new CartService();
 
     public ProductInventoryDAO() {
         super(ProductInventory.class);
@@ -36,6 +42,14 @@ public class ProductInventoryDAO extends GenericDAO<ProductInventory> {
             return 0;
         } finally {
             em.close();
+        }
+    }
+
+    public void updatePaymentSuccess(ShoppingSession shoppingSession, ArrayList<CartItem> cartItems) {
+        for (CartItem cartItem : cartItems) {
+            subtractQuantity(cartItem.getProductId().getProductId(), cartItem.getQuantity());
+            cartItem.setQuantity(0);
+            cartService.updateCartItem(shoppingSession, cartItem);
         }
     }
 
@@ -75,4 +89,5 @@ public class ProductInventoryDAO extends GenericDAO<ProductInventory> {
             em.close();
         }
     }
+
 }
